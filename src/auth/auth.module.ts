@@ -7,12 +7,12 @@ import { LocalStrategy } from './strategies/local.strategy';
 import { AuthController } from './auth.controller';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { UsersService } from 'src/users/users.service';
-import { MongooseModule } from '@nestjs/mongoose';
-import { User, userSchema } from 'src/users/models/user.model';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from 'src/users/entities/user.entity';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{name: User.name, schema: userSchema}]),
+    TypeOrmModule.forFeature([User]),
     UsersModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],  

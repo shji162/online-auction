@@ -54,7 +54,11 @@ export class AuthService {
 
         const hashedPassword = await bcrypt.hash(user.password, 10);
         const newUser: CreateUserDto = { ...user, password: hashedPassword }; 
-        await this.userService.create(newUser);
-        return this.login(newUser);
+        const res = await this.userService.create(newUser);
+
+         const payload = { email: res.email, id: res.id, role: res.role };
+        return { accessToken: this.jwtService.sign(payload, {
+            secret: "cf2956bcc563315618dce3fc22ecfa9b"
+        }), user: res};
   }
 }

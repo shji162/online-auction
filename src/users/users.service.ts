@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
-import { User } from './models/user.model';
+import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -20,6 +20,7 @@ export class UsersService {
   }
 
   async findByEmail(email: string): Promise<User | null> {
+    console.log(email)
     return await this.userModel.findOneBy({email: email });
   }
 
