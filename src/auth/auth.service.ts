@@ -1,14 +1,32 @@
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from "bcryptjs"
 import { CreateUserDto } from '../users/dto/create-user.dto';
-import { ConfigService } from '@nestjs/config';
-import { Roles } from 'src/users/enums/user.enum';
+import type { ConfigType } from '@nestjs/config';
+import jwtRefreshTokenConfig from 'src/config/jwt-refreshToken.config';
+import { RegisterUserDto } from './DTO/register.dto';
+import { LoginUserDto } from './DTO/login.dto';
+import { RefreshUserDto } from './DTO/refresh.dto';
 
 @Injectable()
 export class AuthService {
-    constructor(private userService: UsersService, private jwtService: JwtService, private configService: ConfigService){}
+    
+    constructor(private userService: UsersService, private jwtService: JwtService, @Inject(jwtRefreshTokenConfig.KEY) private refreshConfig: ConfigType<typeof jwtRefreshTokenConfig>){}
+
+
+    async refresh(user: RefreshUserDto) {
+       const candidate = await this.userService.findByEmail(user.email)
+        if(!candidate){
+            return new BadRequestException('user not exist')
+        }
+
+        const payload = { email: candidate.email, role: candidate.role };
+        const accessToken = await this.jwtService.signAsync(payload, {
+            secret: "cf2956bcc563315618dce3fc22ecfa9b"
+        })
+        return { accessToken, user: candidate};
+    }
 
     async validate(password: string, email: string) { 
         const user = await this.userService.findByEmail(email)
@@ -34,18 +52,32 @@ export class AuthService {
         
     }
 
-    async login(user: any){
+    async generateTokens(user: any) {
+    const payload = { email: user.email, role: user.role };
+    const [accessToken, refreshToken] = await Promise.all([
+      this.jwtService.signAsync(payload, {
+            secret: "cf2956bcc563315618dce3fc22ecfa9b"
+        }),
+      this.jwtService.signAsync(payload, {
+            secret: "cf2956bcc563315618dce3fc22ecfa9b"
+        }),
+    ]);
+    return {
+      accessToken,
+      refreshToken,
+    };
+  }
+
+    async login(user: LoginUserDto){
         const candidate = await this.userService.findByEmail(user.email)
         if(!candidate){
             return new BadRequestException('user not exist')
         }
-        const payload = { email: user.email, id: user.id, role: user.role };
-        return { accessToken: this.jwtService.sign(payload, {
-            secret: "cf2956bcc563315618dce3fc22ecfa9b"
-        }), user: candidate};
+        const tokens = await this.generateTokens(candidate)
+        return { tokens, user: candidate};
     }
 
-    async register(user: CreateUserDto) {
+    async register(user: RegisterUserDto) {
         const existingUser = await this.userService.findByEmail(user.email);
 
         if (existingUser) {
@@ -53,12 +85,13 @@ export class AuthService {
         }
 
         const hashedPassword = await bcrypt.hash(user.password, 10);
-        const newUser: CreateUserDto = { ...user, password: hashedPassword }; 
-        const res = await this.userService.create(newUser);
+        const newUser: RegisterUserDto = { ...user, password: hashedPassword }; 
+        
+        const tokens = await this.generateTokens(newUser)
 
-         const payload = { email: res.email, id: res.id, role: res.role };
-        return { accessToken: this.jwtService.sign(payload, {
-            secret: "cf2956bcc563315618dce3fc22ecfa9b"
-        }), user: res};
+        console.log(newUser)
+
+        const res = await this.userService.create({...newUser, refreshToken: tokens.refreshToken});
+        return { tokens, user: res};
   }
 }

@@ -3,11 +3,14 @@ import { Roles } from '../enums/user.enum';
 
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn("uuid")
   id: string;
 
   @Column({ unique: true})
   email: string;
+
+  @Column({ unique: true, nullable: true})
+  refreshToken: string;
 
   @Column()
   name: string;

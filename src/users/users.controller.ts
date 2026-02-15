@@ -15,6 +15,13 @@ export class UsersController {
   findByEmail(@Query('email') email: string) {
     return this.usersService.findByEmail(email);
   }
+
+  @UseGuards(RoleGuard)
+  @UseGuards(JwtGuard)
+  @Get('all')
+  findAll() {
+    return this.usersService.findAll();
+  }
    
   @UseGuards(RoleGuard)
   @UseGuards(JwtGuard)

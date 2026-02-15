@@ -9,26 +9,21 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { UsersService } from 'src/users/users.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/users/entities/user.entity';
+import jwtAccessTokenConfig from 'src/config/jwt-accessToken.config';
+import jwtRefreshTokenConfig from 'src/config/jwt-refreshToken.config';
+import { refreshJwtStrategy } from './strategies/refresh.strategy';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]),
     UsersModule,
-    JwtModule.registerAsync({
-      imports: [ConfigModule],  
-      useFactory: async (configService: ConfigService) => ({
-        secret: "cf2956bcc563315618dce3fc22ecfa9b",
-        signOptions: {
-          expiresIn: "1d",
-        },
-      }),
-      inject: [ConfigService],
-      
-    }),
+    JwtModule.registerAsync(jwtAccessTokenConfig.asProvider()),
+    ConfigModule.forFeature(jwtAccessTokenConfig),
+    ConfigModule.forFeature(jwtRefreshTokenConfig),
     JwtModule
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy, ConfigService, UsersService, JwtService],
+  providers: [AuthService, LocalStrategy, JwtStrategy, ConfigService, UsersService, JwtService, refreshJwtStrategy],
   exports: [AuthService],
 })
 export class AuthModule {}
