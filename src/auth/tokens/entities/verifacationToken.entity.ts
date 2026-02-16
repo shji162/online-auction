@@ -1,11 +1,16 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
-export class refreshToken {
-  @PrimaryGeneratedColumn()
+export class verifacationToken {
+  @PrimaryGeneratedColumn("uuid")
   id: string
-   @Column()
-  userId: string
+
+  @Column()
+  expiresIn: Date
+
+  @Column()
+  email: string
+
   @Column({unique: true})
   verifacationToken: string
 }

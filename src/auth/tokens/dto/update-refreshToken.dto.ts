@@ -1,4 +1,4 @@
 import { PartialType } from '@nestjs/mapped-types';
-import { CreaterRefreshTokenDto } from './create-refreshToken.dto';
+import { CreateVerifacationTokenDto } from './create-verifycationToken.dto';
 
-export class UpdateTokenDto extends PartialType(CreaterRefreshTokenDto) {}
+export class UpdateTokenDto extends PartialType(CreateVerifacationTokenDto) {}

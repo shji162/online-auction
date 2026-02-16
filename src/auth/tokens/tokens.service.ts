@@ -1,32 +1,34 @@
 import { Injectable } from '@nestjs/common';
-import { CreaterRefreshTokenDto } from './dto/create-refreshToken.dto';
 import { UpdateTokenDto } from './dto/update-refreshToken.dto';
-import { Entity, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { refreshToken } from './entities/refreshToken.entity';
+import { verifacationToken } from './entities/verifacationToken.entity';
+import { CreateVerifacationTokenDto } from './dto/create-verifycationToken.dto';
+
 
 @Injectable()
 export class TokensService {
 
-  constructor(@InjectRepository(refreshToken) private refreshTokensRepository: Repository<refreshToken>) {}
+  constructor(@InjectRepository(verifacationToken) private refreshTokensRepository: Repository<verifacationToken>) {}
 
-  create(createTokenDto: CreaterRefreshTokenDto) {
-    return this.refreshTokensRepository.create(createTokenDto)
+  create(createTokenDto: CreateVerifacationTokenDto) {
+    const data = this.refreshTokensRepository.create(createTokenDto)
+    return this.refreshTokensRepository.save(data)
   }
 
-  findByUserId(userId: string) {
-    return this.refreshTokensRepository.findOneBy({userId: userId});
+  findByEmail(email: string) {
+    return this.refreshTokensRepository.findOneBy({email: email});
   }
   
-  findOne(id: string) {
-    return this.refreshTokensRepository.findOneBy({id: id});
+  findByToken(token: string) {
+    return this.refreshTokensRepository.findOneBy({verifacationToken: token});
   }
 
   update(id: string, updateTokenDto: UpdateTokenDto) {
     return this.refreshTokensRepository.update({id: id}, updateTokenDto);
   }
 
-  remove(id: string) {
-    return this.refreshTokensRepository.delete({id: id})
+  remove(email: string) {
+    return this.refreshTokensRepository.delete({email: email})
   }
 }

@@ -7,11 +7,15 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { ConfigModule } from '@nestjs/config';
 import jwtRefreshTokenConfig from 'src/config/jwt-refreshToken.config';
+import { EmailConfirmationService } from 'src/auth/email-confirmation/email-confirmation.service';
+import { TokensService } from 'src/auth/tokens/tokens.service';
+import { verifacationToken } from 'src/auth/tokens/entities/verifacationToken.entity';
+import { MailService } from 'src/libs/mail/mail.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User]), ConfigModule.forFeature(jwtRefreshTokenConfig)],
+  imports: [TypeOrmModule.forFeature([User]), ConfigModule.forFeature(jwtRefreshTokenConfig), TypeOrmModule.forFeature([verifacationToken])],
   controllers: [UsersController],
-  providers: [UsersService, AuthService, JwtService],
+  providers: [UsersService, AuthService, JwtService, EmailConfirmationService, TokensService, MailService],
   exports: [UsersService]
 })
 export class UsersModule {}

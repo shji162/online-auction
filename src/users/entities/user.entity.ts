@@ -22,6 +22,9 @@ export class User {
   role: Roles
 
   @Column({ default: false })
+  isVerified: boolean;
+
+  @Column({ default: false })
   isBanned: boolean;
 
   @Column({default: 0})

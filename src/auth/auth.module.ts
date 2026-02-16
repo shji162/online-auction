@@ -12,18 +12,25 @@ import { User } from 'src/users/entities/user.entity';
 import jwtAccessTokenConfig from 'src/config/jwt-accessToken.config';
 import jwtRefreshTokenConfig from 'src/config/jwt-refreshToken.config';
 import { refreshJwtStrategy } from './strategies/refresh.strategy';
+import { EmailConfirmationService } from './email-confirmation/email-confirmation.service';
+import { EmailConfirmationModule } from './email-confirmation/email-confirmation.module';
+import { TokensService } from './tokens/tokens.service';
+import { verifacationToken } from './tokens/entities/verifacationToken.entity';
+import { MailService } from 'src/libs/mail/mail.service';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([verifacationToken]),
     UsersModule,
     JwtModule.registerAsync(jwtAccessTokenConfig.asProvider()),
     ConfigModule.forFeature(jwtAccessTokenConfig),
     ConfigModule.forFeature(jwtRefreshTokenConfig),
-    JwtModule
+    JwtModule,
+    EmailConfirmationModule
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy, ConfigService, UsersService, JwtService, refreshJwtStrategy],
+  providers: [AuthService, MailService, LocalStrategy, JwtStrategy, ConfigService, UsersService, TokensService, JwtService, refreshJwtStrategy, EmailConfirmationService],
   exports: [AuthService],
 })
 export class AuthModule {}

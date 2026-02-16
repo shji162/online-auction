@@ -8,11 +8,12 @@ import jwtRefreshTokenConfig from 'src/config/jwt-refreshToken.config';
 import { RegisterUserDto } from './DTO/register.dto';
 import { LoginUserDto } from './DTO/login.dto';
 import { RefreshUserDto } from './DTO/refresh.dto';
+import { EmailConfirmationService } from './email-confirmation/email-confirmation.service';
 
 @Injectable()
 export class AuthService {
     
-    constructor(private userService: UsersService, private jwtService: JwtService, @Inject(jwtRefreshTokenConfig.KEY) private refreshConfig: ConfigType<typeof jwtRefreshTokenConfig>){}
+    constructor(private emailConfirmationService: EmailConfirmationService, private userService: UsersService, private jwtService: JwtService, @Inject(jwtRefreshTokenConfig.KEY) private refreshConfig: ConfigType<typeof jwtRefreshTokenConfig>){}
 
 
     async refresh(user: RefreshUserDto) {
@@ -23,7 +24,7 @@ export class AuthService {
 
         const payload = { email: candidate.email, role: candidate.role };
         const accessToken = await this.jwtService.signAsync(payload, {
-            secret: "cf2956bcc563315618dce3fc22ecfa9b"
+            secret: "cf2956bcc563315618dce3fc22ecfa9a"
         })
         return { accessToken, user: candidate};
     }
@@ -42,7 +43,7 @@ export class AuthService {
 
     async validateToken(token: string) {
         const validate = this.jwtService.verify(token, {
-            secret: "cf2956bcc563315618dce3fc22ecfa9b"
+            secret: "cf2956bcc563315618dce3fc22ecfa9a"
         })
 
         return validate
@@ -56,7 +57,7 @@ export class AuthService {
     const payload = { email: user.email, role: user.role };
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(payload, {
-            secret: "cf2956bcc563315618dce3fc22ecfa9b"
+            secret: "cf2956bcc563315618dce3fc22ecfa9a"
         }),
       this.jwtService.signAsync(payload, {
             secret: "cf2956bcc563315618dce3fc22ecfa9b"
@@ -72,6 +73,10 @@ export class AuthService {
         const candidate = await this.userService.findByEmail(user.email)
         if(!candidate){
             return new BadRequestException('user not exist')
+        }
+        if(!candidate.isVerified){
+            await this.emailConfirmationService.sendVerifacationToken(candidate)
+            throw new UnauthorizedException()
         }
         const tokens = await this.generateTokens(candidate)
         return { tokens, user: candidate};
@@ -89,9 +94,10 @@ export class AuthService {
         
         const tokens = await this.generateTokens(newUser)
 
-        console.log(newUser)
-
         const res = await this.userService.create({...newUser, refreshToken: tokens.refreshToken});
+
+        await this.emailConfirmationService.sendVerifacationToken(res)
+
         return { tokens, user: res};
   }
 }

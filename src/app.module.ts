@@ -15,15 +15,8 @@ import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: '1234',
-      database: 'postgres',
-      entities: [__dirname + '/../**/*.entity.js'],
-      synchronize: true
+    TypeOrmModule.forRootAsync({
+      useFactory: dbConfig
     }),
     UsersModule,
     AuthModule,

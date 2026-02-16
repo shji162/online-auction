@@ -1,10 +1,12 @@
 import { Module } from '@nestjs/common';
 import { TokensService } from './tokens.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { refreshToken } from './entities/refreshToken.entity';
+import { verifacationToken } from './entities/verifacationToken.entity';
+
 
 @Module({
-  imports: [TypeOrmModule.forFeature([refreshToken])],
+  imports: [TypeOrmModule.forFeature([verifacationToken])],
   providers: [TokensService],
+  exports: [TokensService]
 })
 export class TokensModule {}
