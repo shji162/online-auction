@@ -1,7 +1,8 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { TokenTypes } from '../enums/tokenType.enum';
 
 @Entity()
-export class verifacationToken {
+export class Token {
   @PrimaryGeneratedColumn("uuid")
   id: string
 
@@ -12,5 +13,9 @@ export class verifacationToken {
   email: string
 
   @Column({unique: true})
-  verifacationToken: string
+  token: string
+
+  @Column({enum: TokenTypes})
+  type: TokenTypes
+
 }

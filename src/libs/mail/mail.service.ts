@@ -2,7 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { render } from '@react-email/components';
 import { Resend } from 'resend';
-import { confirmationEmail } from './templates/confirmtionEmail.template';
+import {confirmationEmail} from './templates/confirmtionEmail.template';
+import { passwordRecovery } from './templates/resetPasswordEmail.template';
 
 const resend = new Resend('re_91WxGsYV_7TxbEZ4r8LgqbcFdEiVScJK9');
 
@@ -19,6 +20,14 @@ export class MailService {
         return this.sendMail(email, 'подтверждение почты', html)
     }
 
+     async sendPasswordResetEmail(email: string, token: string){
+        const domain = this.configService.getOrThrow<string>("ALLOWED_ORIGIN")
+
+        const html = await render(passwordRecovery({domain, token}))
+
+        return this.sendMail(email, 'сброс пароля', html)
+    }
+а
      sendMail(email: string, sub: string, html: string) {
         return resend.emails.send({
             from: 'onboarding@resend.dev',

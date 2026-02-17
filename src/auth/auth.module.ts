@@ -15,13 +15,13 @@ import { refreshJwtStrategy } from './strategies/refresh.strategy';
 import { EmailConfirmationService } from './email-confirmation/email-confirmation.service';
 import { EmailConfirmationModule } from './email-confirmation/email-confirmation.module';
 import { TokensService } from './tokens/tokens.service';
-import { verifacationToken } from './tokens/entities/verifacationToken.entity';
+import { Token } from './tokens/entities/verifacationToken.entity';
 import { MailService } from 'src/libs/mail/mail.service';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]),
-    TypeOrmModule.forFeature([verifacationToken]),
+    TypeOrmModule.forFeature([Token]),
     UsersModule,
     JwtModule.registerAsync(jwtAccessTokenConfig.asProvider()),
     ConfigModule.forFeature(jwtAccessTokenConfig),

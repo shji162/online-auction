@@ -28,8 +28,8 @@ export class Auction{
     expiresIn: Date
 
     @Column()
-    history: string[]
+    history: string
 
     @Column({length: 5})
-    media: string[]
+    media: string
 }

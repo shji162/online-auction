@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsString, Length, Min } from "class-validator"
+import { IsNotEmpty, IsNumber, IsString, Length, Min, IsDate } from "class-validator"
 
 export class CreateAuctionDto {
     @IsString({message: "id должно быть строкой"})
@@ -26,5 +26,8 @@ export class CreateAuctionDto {
     
     priceStep: number
 
-    media: string[]
+    @IsDate({message: "укажите время окончания аукциона"})
+    expiresIn: Date
+
+    media: string
 }

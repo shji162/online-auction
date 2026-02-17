@@ -8,6 +8,7 @@ import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
 import { MailService } from 'src/libs/mail/mail.service';
 import { use } from 'passport';
+import { TokenTypes } from '../tokens/enums/tokenType.enum';
 
 @Injectable()
 export class EmailConfirmationService {
@@ -44,7 +45,7 @@ export class EmailConfirmationService {
     async sendVerifacationToken(user: User) {
         const verificationToken = await this.generateVerifacationToken(user.email)
 
-        await this.mailService.sendConfirmationEmail(user.email, verificationToken.verifacationToken)
+        await this.mailService.sendConfirmationEmail(user.email, verificationToken.token)
 
         return true
     }
@@ -53,12 +54,12 @@ export class EmailConfirmationService {
         const token = uuidv4()
         const expiresIn = new Date(new Date().getTime() + 3600 * 1000)
 
-        const existingToken = await this.tokenService.findByEmail(email)
+        const existingToken = await this.tokenService.findByEmail(email, TokenTypes.VERIFACATION)
         if(existingToken){
             await this.tokenService.remove(email)
         }
 
-        const verificationToken = await this.tokenService.create({email, verifacationToken: token, expiresIn})
+        const verificationToken = await this.tokenService.create({email, token: token, expiresIn, type: TokenTypes.VERIFACATION})
 
         return verificationToken
     }
