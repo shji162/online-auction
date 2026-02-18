@@ -20,8 +20,7 @@ import { MailService } from 'src/libs/mail/mail.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User]),
-    TypeOrmModule.forFeature([Token]),
+    TypeOrmModule.forFeature([User, Token]),
     UsersModule,
     JwtModule.registerAsync(jwtAccessTokenConfig.asProvider()),
     ConfigModule.forFeature(jwtAccessTokenConfig),

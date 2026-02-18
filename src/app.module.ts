@@ -12,6 +12,7 @@ import { ConfigModule } from '@nestjs/config';
 import { IS_DEV_ENV } from './libs/common/utils/is_dev.util';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
+import { RatesModule } from './rates/rates.module';
 
 @Module({
   imports: [
@@ -28,7 +29,8 @@ import { UsersModule } from './users/users.module';
     ConfigModule.forRoot({
       isGlobal: true,
       ignoreEnvFile: IS_DEV_ENV
-    })
+    }),
+    RatesModule
   ],
   controllers: [AppController],
   providers: [AppService],

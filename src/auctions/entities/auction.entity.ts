@@ -6,8 +6,8 @@ export class Auction{
     @PrimaryGeneratedColumn("uuid")
     id: string;
 
-    @Column()
-    UserId: string
+    @Column({nullable: false})
+    userId: string
 
     @Column()
     name: string
@@ -27,9 +27,4 @@ export class Auction{
     @Column()
     expiresIn: Date
 
-    @Column()
-    history: string
-
-    @Column({length: 5})
-    media: string
 }

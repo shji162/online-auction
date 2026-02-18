@@ -26,8 +26,8 @@ export class CreateAuctionDto {
     
     priceStep: number
 
-    @IsDate({message: "укажите время окончания аукциона"})
-    expiresIn: Date
+    
+    expiresIn: string
 
-    media: string
+   
 }
