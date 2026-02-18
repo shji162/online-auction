@@ -1,4 +1,5 @@
-import { IsNotEmpty, IsNumber, IsString, Length, Min, IsDate } from "class-validator"
+import { IsNotEmpty, IsNumber, IsString, Length, Min, IsDate, IsEnum } from "class-validator"
+import { Status } from "../enums/status.enum"
 
 export class CreateAuctionDto {
     @IsString({message: "id должно быть строкой"})
@@ -28,6 +29,10 @@ export class CreateAuctionDto {
 
     
     expiresIn: string
+
+    @IsString({message: "категория должна быть строкой"})
+    @IsNotEmpty({message: "укажите категорию"})
+    category: string
 
    
 }

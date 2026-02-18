@@ -1,4 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Status } from "../enums/status.enum";
 
 
 @Entity()
@@ -26,5 +27,11 @@ export class Auction{
 
     @Column()
     expiresIn: Date
+
+    @Column()
+    category: string
+
+    @Column({enum: Status, default: Status.ACTIVE})
+    status: Status
 
 }
