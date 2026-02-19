@@ -28,7 +28,7 @@ export class Auction{
     @Column()
     expiresIn: Date
 
-    @Column()
+    @Column({nullable: true})
     category: string
 
     @Column({enum: Status, default: Status.ACTIVE})

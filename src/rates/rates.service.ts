@@ -5,11 +5,13 @@ import { UsersService } from 'src/users/users.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Rate } from './entities/rate.entity';
 import { Repository } from 'typeorm';
+import { DepositesService } from 'src/deposites/deposites.service';
+import { MailService } from 'src/libs/mail/mail.service';
 
 @Injectable()
 export class RatesService {
 
-    constructor(private auctionsService: AuctionsService, private usersService: UsersService, @InjectRepository(Rate) private ratesRepository: Repository<Rate>) {}
+    constructor(private auctionsService: AuctionsService, private mailService: MailService, private usersService: UsersService,private depositeService: DepositesService, @InjectRepository(Rate) private ratesRepository: Repository<Rate>) {}
 
     async newRate(dto: CreateRateDto){
         const existingAuction = await this.auctionsService.findOne(dto.auctionId)
@@ -36,12 +38,37 @@ export class RatesService {
         if(dto.cost < existingAuction.currentPrice){
             throw new BadRequestException()
         }
+
+        const existingDeposite = await this.depositeService.findByEmail(existingUser.email)
+
+        if(!existingDeposite){
+            throw new NotFoundException()
+        }
+
+        if(existingDeposite.deposite < dto.cost){
+            throw new BadRequestException()
+        }
+
+        if(dto.cost - existingAuction.currentPrice < existingAuction.priceStep){
+            throw new BadRequestException()
+        }
+
+        await this.depositeService.update(existingDeposite.id, {
+            deposite: existingDeposite.deposite - dto.cost
+        })
+        
         
         await this.auctionsService.update(existingAuction.id, {
             currentPrice: dto.cost
         })
 
         const rate = this.ratesRepository.create(dto)
+
+        const users = await this.depositeService.findByAuctionId(existingAuction.id)
+
+        users.map(({email}) => {
+            this.mailService.sendRateEmail(email, existingAuction.name, existingUser.name)
+        })
 
         return await this.ratesRepository.save(rate)
     }

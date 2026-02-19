@@ -13,6 +13,8 @@ import { IS_DEV_ENV } from './libs/common/utils/is_dev.util';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { RatesModule } from './rates/rates.module';
+import { MediaModule } from './auctions/media/media.module';
+import { DepositesModule } from './deposites/deposites.module';
 
 @Module({
   imports: [
@@ -30,7 +32,9 @@ import { RatesModule } from './rates/rates.module';
       isGlobal: true,
       ignoreEnvFile: IS_DEV_ENV
     }),
-    RatesModule
+    RatesModule,
+    MediaModule,
+    DepositesModule
   ],
   controllers: [AppController],
   providers: [AppService],

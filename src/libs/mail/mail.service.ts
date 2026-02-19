@@ -4,6 +4,7 @@ import { render } from '@react-email/components';
 import { Resend } from 'resend';
 import {confirmationEmail} from './templates/confirmtionEmail.template';
 import { passwordRecovery } from './templates/resetPasswordEmail.template';
+import { RateEmail } from './templates/rateChangeEmail.template';
 
 const resend = new Resend('re_91WxGsYV_7TxbEZ4r8LgqbcFdEiVScJK9');
 
@@ -11,6 +12,13 @@ const resend = new Resend('re_91WxGsYV_7TxbEZ4r8LgqbcFdEiVScJK9');
 export class MailService {
 
     constructor(private configService: ConfigService) {}
+
+    async sendRateEmail(email: string, auctionName: string, userName: string){
+
+        const html = await render(RateEmail({auctionName, userName}))
+
+        return this.sendMail(email, 'ставка перебита', html)
+    }
 
     async sendConfirmationEmail(email: string, token: string){
         const domain = this.configService.getOrThrow<string>("ALLOWED_ORIGIN")

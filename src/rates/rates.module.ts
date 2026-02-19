@@ -18,10 +18,12 @@ import { TokensService } from 'src/auth/tokens/tokens.service';
 import { MailService } from 'src/libs/mail/mail.service';
 import { Token } from 'src/auth/tokens/entities/verifacationToken.entity';
 import { Rate } from './entities/rate.entity';
+import { DepositesService } from 'src/deposites/deposites.service';
+import { Deposite } from 'src/deposites/entities/deposite.entity';
 
 @Module({
  imports: [
-     TypeOrmModule.forFeature([User, Auction, Token, Rate]),
+     TypeOrmModule.forFeature([User, Auction, Token, Rate, Deposite]),
      UsersModule,
      JwtModule.registerAsync(jwtAccessTokenConfig.asProvider()),
      ConfigModule.forFeature(jwtAccessTokenConfig),
@@ -30,6 +32,6 @@ import { Rate } from './entities/rate.entity';
      EmailConfirmationModule
    ],
   controllers: [RatesController],
-  providers: [RatesService, AuthService, AuctionsService, UsersService, AuthService, EmailConfirmationService, JwtService, ConfigService, TokensService, MailService],
+  providers: [RatesService, DepositesService, AuthService, AuctionsService, UsersService, AuthService, EmailConfirmationService, JwtService, ConfigService, TokensService, MailService],
 })
 export class RatesModule {}
