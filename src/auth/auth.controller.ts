@@ -1,9 +1,9 @@
-import { Body, Controller, Delete, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Post, Req, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateUserDto } from '../users/dto/create-user.dto';
 import { LoginUserDto } from './DTO/login.dto';
 import { RegisterUserDto } from './DTO/register.dto';
-import { RefreshUserDto } from './DTO/refresh.dto';
+import type { Request, Response } from 'express';
+import { IS_DEV_ENV } from 'src/libs/common/utils/is_dev.util';
 
 
 @Controller('auth')
@@ -12,19 +12,37 @@ export class AuthController {
 
 
   @Post("login")
-  async login(@Body() user: LoginUserDto){ 
-    return this.authService.login(user)
+  async login(@Res({ passthrough: true }) response: Response, @Body() user: LoginUserDto){ 
+    const res = await this.authService.login(user)
+
+    response.cookie('refreshToken', res.tokens.refreshToken, {
+      httpOnly: true,
+      secure: !IS_DEV_ENV,
+      maxAge: 1000 * 3600 * 24 * 15,
+      sameSite: 'strict'
+    })
+
+    return res
   }
 
   
   @Post("register")
-  async register(@Body() user: RegisterUserDto){
-    return this.authService.register(user)
+  async register(@Res({ passthrough: true }) response: Response, @Body() user: RegisterUserDto){
+    const res = await this.authService.register(user)
+
+     response.cookie('refreshToken', res.tokens.refreshToken, {
+      httpOnly: true,
+      secure: !IS_DEV_ENV,
+      maxAge: 1000 * 3600 * 24 * 15,
+      sameSite: 'strict'
+    })
+
+    return res
   }
 
   @Post("refresh")
-  async refresh(@Body() user: RefreshUserDto){
-    return this.authService.refresh(user)
+  async refresh(@Req() req: Request){
+   return await this.authService.refresh(req)
   }
 
   @Delete("logout")

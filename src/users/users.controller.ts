@@ -16,7 +16,8 @@ export class UsersController {
     return this.usersService.findByEmail(email);
   }
 
-
+  @UseGuards(RoleGuard)
+  @UseGuards(JwtGuard)
   @Get('all')
   findAll() {
     return this.usersService.findAll();
@@ -36,6 +37,8 @@ export class UsersController {
     return this.usersService.update(id, updateUserDto);
   }
 
+  @UseGuards(RoleGuard)
+  @UseGuards(JwtGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.usersService.remove(id);

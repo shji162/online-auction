@@ -15,6 +15,7 @@ import { UsersModule } from './users/users.module';
 import { RatesModule } from './rates/rates.module';
 import { MediaModule } from './auctions/media/media.module';
 import { DepositesModule } from './deposites/deposites.module';
+import { HistoryModule } from './users/history/history.module';
 
 @Module({
   imports: [
@@ -34,7 +35,8 @@ import { DepositesModule } from './deposites/deposites.module';
     }),
     RatesModule,
     MediaModule,
-    DepositesModule
+    DepositesModule,
+    HistoryModule
   ],
   controllers: [AppController],
   providers: [AppService],

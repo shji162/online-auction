@@ -22,7 +22,7 @@ export class RoleGuard extends AuthGuard('jwt') {
     if (isPublic) return true;
 
     
-    const role = JSON.parse(atob(token.split(' ')[1])).role
+    const role = JSON.parse(atob(token.split('.')[1])).role
 
     if(role !== Roles.ADMIN) {
         throw new ForbiddenException("ACCESS IS NOT ALLOWED")

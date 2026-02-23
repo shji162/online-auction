@@ -9,6 +9,7 @@ import { RegisterUserDto } from './DTO/register.dto';
 import { LoginUserDto } from './DTO/login.dto';
 import { RefreshUserDto } from './DTO/refresh.dto';
 import { EmailConfirmationService } from './email-confirmation/email-confirmation.service';
+import { Request } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -16,10 +17,17 @@ export class AuthService {
     constructor(private emailConfirmationService: EmailConfirmationService, private userService: UsersService, private jwtService: JwtService, @Inject(jwtRefreshTokenConfig.KEY) private refreshConfig: ConfigType<typeof jwtRefreshTokenConfig>){}
 
 
-    async refresh(user: RefreshUserDto) {
-       const candidate = await this.userService.findByEmail(user.email)
+    async refresh(req: Request) {
+       const refreshToken: string = req.cookies['refreshToken']
+       const isValidToken = this.validateRefreshToken(refreshToken)
+       if(!isValidToken){
+            throw new UnauthorizedException()
+       }
+
+       const email = JSON.parse(atob(refreshToken.split('.')[1])).email
+       const candidate = await this.userService.findByEmail(email)
         if(!candidate){
-            return new BadRequestException('user not exist')
+            throw new BadRequestException('user not exist')
         }
 
         const payload = { email: candidate.email, role: candidate.role };
@@ -41,7 +49,7 @@ export class AuthService {
         return user
     }
 
-    async validateToken(token: string) {
+    async validateAccessToken(token: string) {
         const validate = this.jwtService.verify(token, {
             secret: "cf2956bcc563315618dce3fc22ecfa9a"
         })
@@ -49,9 +57,14 @@ export class AuthService {
         return validate
     }
 
-    async updatePassword(email: string) {
-        
+    async validateRefreshToken(token: string) {
+        const validate = this.jwtService.verify(token, {
+            secret: "cf2956bcc563315618dce3fc22ecfa9b"
+        })
+
+        return validate
     }
+
 
     async generateTokens(user: any) {
     const payload = { email: user.email, role: user.role };
@@ -72,7 +85,7 @@ export class AuthService {
     async login(user: LoginUserDto){
         const candidate = await this.userService.findByEmail(user.email)
         if(!candidate){
-            return new BadRequestException('user not exist')
+            throw new BadRequestException('user not exist')
         }
         if(!candidate.isVerified){
             await this.emailConfirmationService.sendVerifacationToken(candidate)
