@@ -25,7 +25,13 @@ export class JwtGuard extends AuthGuard('jwt') {
       throw new UnauthorizedException('Invalid token');
     }
 
-    const validate = this.authService.validateAccessToken(token)
+    const accessToken = token.split(' ')[1]
+
+    if(!accessToken){
+      throw new UnauthorizedException()
+    }
+
+    const validate = this.authService.validateAccessToken(accessToken)
 
     if (!validate) {
       throw new UnauthorizedException('Invalid token');

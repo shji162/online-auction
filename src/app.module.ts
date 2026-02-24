@@ -31,7 +31,6 @@ import { HistoryModule } from './users/history/history.module';
     TokensModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      ignoreEnvFile: IS_DEV_ENV
     }),
     RatesModule,
     MediaModule,

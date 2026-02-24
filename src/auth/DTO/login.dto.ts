@@ -7,9 +7,6 @@ export class LoginUserDto {
     @IsEmail()
     email: string
 
-    @IsString({message: "пароль должен быть строкой"})
-    @IsNotEmpty({message: "пароль не должен быть пустым"})
-    @Length(8, 64, {message: "пароль не должен быть меньше 8 символов и не больше 64"})
     password: string
 
 }

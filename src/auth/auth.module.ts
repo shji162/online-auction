@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { UsersModule } from 'src/users/users.module';
 import { AuthService } from './auth.service';
 import { JwtModule, JwtService } from '@nestjs/jwt';
@@ -19,17 +19,20 @@ import { Token } from './tokens/entities/verifacationToken.entity';
 import { MailService } from 'src/libs/mail/mail.service';
 
 @Module({
-  imports: [
+  imports: [ 
+    forwardRef(() => UsersModule),
     TypeOrmModule.forFeature([User, Token]),
-    UsersModule,
     JwtModule.registerAsync(jwtAccessTokenConfig.asProvider()),
     ConfigModule.forFeature(jwtAccessTokenConfig),
     ConfigModule.forFeature(jwtRefreshTokenConfig),
+    ConfigModule.forRoot({
+      isGlobal: true
+    }),
     JwtModule,
     EmailConfirmationModule
   ],
   controllers: [AuthController],
-  providers: [AuthService, MailService, LocalStrategy, JwtStrategy, ConfigService, UsersService, TokensService, JwtService, refreshJwtStrategy, EmailConfirmationService],
+  providers: [AuthService, MailService, LocalStrategy, ConfigService, JwtStrategy, ConfigService, UsersService, TokensService, JwtService, refreshJwtStrategy, EmailConfirmationService],
   exports: [AuthService],
 })
 export class AuthModule {}

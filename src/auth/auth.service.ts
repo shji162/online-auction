@@ -1,9 +1,9 @@
-import { BadRequestException, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, forwardRef, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from "bcryptjs"
 import { CreateUserDto } from '../users/dto/create-user.dto';
-import type { ConfigType } from '@nestjs/config';
+import type { ConfigService, ConfigType } from '@nestjs/config';
 import jwtRefreshTokenConfig from 'src/config/jwt-refreshToken.config';
 import { RegisterUserDto } from './DTO/register.dto';
 import { LoginUserDto } from './DTO/login.dto';
@@ -14,7 +14,7 @@ import { Request } from 'express';
 @Injectable()
 export class AuthService {
     
-    constructor(private emailConfirmationService: EmailConfirmationService, private userService: UsersService, private jwtService: JwtService, @Inject(jwtRefreshTokenConfig.KEY) private refreshConfig: ConfigType<typeof jwtRefreshTokenConfig>){}
+    constructor(private emailConfirmationService: EmailConfirmationService, @Inject(forwardRef(() => UsersService)) private userService: UsersService, private jwtService: JwtService){}
 
 
     async refresh(req: Request) {
@@ -32,7 +32,7 @@ export class AuthService {
 
         const payload = { email: candidate.email, role: candidate.role };
         const accessToken = await this.jwtService.signAsync(payload, {
-            secret: "cf2956bcc563315618dce3fc22ecfa9a"
+            secret: "access"
         })
         return { accessToken, user: candidate};
     }
@@ -50,8 +50,9 @@ export class AuthService {
     }
 
     async validateAccessToken(token: string) {
+        console.log(token)
         const validate = this.jwtService.verify(token, {
-            secret: "cf2956bcc563315618dce3fc22ecfa9a"
+            secret: "access"
         })
 
         return validate
@@ -59,7 +60,7 @@ export class AuthService {
 
     async validateRefreshToken(token: string) {
         const validate = this.jwtService.verify(token, {
-            secret: "cf2956bcc563315618dce3fc22ecfa9b"
+            secret: "refresh"
         })
 
         return validate
@@ -70,10 +71,10 @@ export class AuthService {
     const payload = { email: user.email, role: user.role };
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(payload, {
-            secret: "cf2956bcc563315618dce3fc22ecfa9a"
+            secret: "access"
         }),
       this.jwtService.signAsync(payload, {
-            secret: "cf2956bcc563315618dce3fc22ecfa9b"
+            secret: "refresh"
         }),
     ]);
     return {
@@ -87,10 +88,10 @@ export class AuthService {
         if(!candidate){
             throw new BadRequestException('user not exist')
         }
-        if(!candidate.isVerified){
+       /* if(!candidate.isVerified){
             await this.emailConfirmationService.sendVerifacationToken(candidate)
             throw new UnauthorizedException()
-        }
+        }*/
         const tokens = await this.generateTokens(candidate)
         return { tokens, user: candidate};
     }
