@@ -6,14 +6,14 @@ import { CreateHistoryDto } from './dto/create-history.dto';
 
 @Injectable()
 export class HistoryService {
-    constructor(@InjectRepository(History) private historyRepository: Repository<History>) {}
+  constructor(@InjectRepository(History) private historyRepository: Repository<History>) {}
 
-    async createHistory(dto: CreateHistoryDto){
-        const data = this.historyRepository.create(dto)
-        return await this.historyRepository.save(data)
-    }
+  async createHistory(dto: CreateHistoryDto) {
+    const data = this.historyRepository.create(dto);
+    return await this.historyRepository.save(data);
+  }
 
-    async getByUserId(userId: string) {
-        return await this.historyRepository.findBy({userId: userId})
-    }
+  async getByAuctionId(auctionId: string) {
+    return await this.historyRepository.findBy({ auctionId });
+  }
 }

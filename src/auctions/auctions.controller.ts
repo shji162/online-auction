@@ -2,7 +2,8 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } f
 import { AuctionsService } from './auctions.service';
 import { CreateAuctionDto } from './dto/create-auction.dto';
 import { UpdateAuctionDto } from './dto/update-auction.dto';
-import { JwtGuard } from 'src/auth/guards/auth.guard';
+import { JwtGuard } from '../auth/guards/auth.guard';
+import { RoleGuard } from '../auth/guards/role.guard';
 
 @Controller('auctions')
 export class AuctionsController {
@@ -15,8 +16,15 @@ export class AuctionsController {
   }
 
   @Get()
-  findByName(@Query('name') name: string) {
-    return this.auctionsService.findByName(name);
+  findByName(@Query('name') name?: string, @Query('category') category?: string) {
+    return this.auctionsService.findByName(name, category);
+  }
+
+  @UseGuards(RoleGuard)
+  @UseGuards(JwtGuard)
+  @Get('all')
+  findAllAdmin() {
+    return this.auctionsService.findAll();
   }
 
   @Get(':id')
@@ -28,6 +36,13 @@ export class AuctionsController {
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateAuctionDto: UpdateAuctionDto) {
     return this.auctionsService.update(id, updateAuctionDto);
+  }
+
+  @UseGuards(RoleGuard)
+  @UseGuards(JwtGuard)
+  @Patch(':id/finish')
+  finish(@Param('id') id: string) {
+    return this.auctionsService.finishAuction(id);
   }
 
   @UseGuards(JwtGuard)

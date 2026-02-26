@@ -14,29 +14,23 @@ export class MailService {
     constructor(private configService: ConfigService) {}
 
     async sendRateEmail(email: string, auctionName: string, userName: string){
-
         const html = await render(RateEmail({auctionName, userName}))
-
         return this.sendMail(email, 'ставка перебита', html)
     }
 
     async sendConfirmationEmail(email: string, token: string){
         const domain = this.configService.getOrThrow<string>("ALLOWED_ORIGIN")
-
         const html = await render(confirmationEmail({domain, token}))
-
         return this.sendMail(email, 'подтверждение почты', html)
     }
 
-     async sendPasswordResetEmail(email: string, token: string){
+    async sendPasswordResetEmail(email: string, token: string){
         const domain = this.configService.getOrThrow<string>("ALLOWED_ORIGIN")
-
         const html = await render(passwordRecovery({domain, token}))
-
         return this.sendMail(email, 'сброс пароля', html)
     }
-а
-     sendMail(email: string, sub: string, html: string) {
+
+    sendMail(email: string, sub: string, html: string) {
         return resend.emails.send({
             from: 'onboarding@resend.dev',
             to: email,

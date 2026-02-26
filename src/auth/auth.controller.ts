@@ -3,7 +3,7 @@ import { AuthService } from './auth.service';
 import { LoginUserDto } from './DTO/login.dto';
 import { RegisterUserDto } from './DTO/register.dto';
 import type { Request, Response } from 'express';
-import { IS_DEV_ENV } from 'src/libs/common/utils/is_dev.util';
+import { IS_DEV_ENV } from '../libs/common/utils/is_dev.util';
 
 
 @Controller('auth')
@@ -30,6 +30,8 @@ export class AuthController {
   async register(@Res({ passthrough: true }) response: Response, @Body() user: RegisterUserDto){
     const res = await this.authService.register(user)
 
+    response.header('Access-Control-Allow-Origin', 'https://auctions-hub-nu.vercel.app')
+
      response.cookie('refreshToken', res.tokens.refreshToken, {
       httpOnly: true,
       secure: !IS_DEV_ENV,
@@ -46,8 +48,9 @@ export class AuthController {
   }
 
   @Delete("logout")
-  async logout(){
-
+  async logout(@Res({ passthrough: true }) response: Response) {
+    response.clearCookie('refreshToken')
+    return { success: true }
   }
 
 }

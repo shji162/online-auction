@@ -1,6 +1,6 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { Deposite } from '../entities/deposite.entity';
+import { DepositeStatus } from '../entities/deposite.entity';
 
-export class UpdateDepositeDto{
-    deposite: number
+export class UpdateDepositeDto {
+  deposite?: number;
+  status?: DepositeStatus;
 }

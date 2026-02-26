@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { HistoryService } from './history.service';
 import { CreateHistoryDto } from './dto/create-history.dto';
 
@@ -11,8 +11,8 @@ export class HistoryController {
     return await this.historyService.createHistory(dto)
   }
 
-  @Get(':userId')
-  async findByUserId(@Param('userId') userId: string){
-    return await this.historyService.getByUserId(userId)
+  @Get()
+  async findByAuctionId(@Query('auctionId') auctionId: string){
+    return await this.historyService.getByAuctionId(auctionId)
   }
 }

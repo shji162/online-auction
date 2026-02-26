@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { RatesService } from './rates.service';
 import { CreateRateDto } from './dto/rate.dto';
-import { JwtGuard } from 'src/auth/guards/auth.guard';
+import { JwtGuard } from '../auth/guards/auth.guard';
 
 @Controller('rates')
 export class RatesController {

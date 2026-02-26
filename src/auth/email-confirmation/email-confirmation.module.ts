@@ -4,9 +4,9 @@ import { EmailConfirmationController } from './email-confirmation.controller';
 import { TokensService } from '../tokens/tokens.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Token } from '../tokens/entities/verifacationToken.entity';
-import { UsersService } from 'src/users/users.service';
-import { MailService } from 'src/libs/mail/mail.service';
-import { User } from 'src/users/entities/user.entity';
+import { UsersService } from '../../users/users.service';
+import { MailService } from '../../libs/mail/mail.service';
+import { User } from '../../users/entities/user.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Token]), TypeOrmModule.forFeature([User])],

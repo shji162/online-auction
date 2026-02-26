@@ -1,5 +1,5 @@
 import { IsEmail, IsEnum, IsNotEmpty, IsString, Length } from "class-validator"
-import { Roles } from "src/users/enums/user.enum"
+import { Roles } from "../enums/user.enum"
 
 export class CreateUserDto {
     @IsString({message: "e-mail должен быть строкой"})

@@ -2,12 +2,8 @@ import { BadRequestException, forwardRef, Inject, Injectable, UnauthorizedExcept
 import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from "bcryptjs"
-import { CreateUserDto } from '../users/dto/create-user.dto';
-import type { ConfigService, ConfigType } from '@nestjs/config';
-import jwtRefreshTokenConfig from 'src/config/jwt-refreshToken.config';
 import { RegisterUserDto } from './DTO/register.dto';
 import { LoginUserDto } from './DTO/login.dto';
-import { RefreshUserDto } from './DTO/refresh.dto';
 import { EmailConfirmationService } from './email-confirmation/email-confirmation.service';
 import { Request } from 'express';
 
@@ -18,7 +14,9 @@ export class AuthService {
 
 
     async refresh(req: Request) {
-       const refreshToken: string = req.cookies['refreshToken']
+      try{
+         const refreshToken: string = req.cookies['refreshToken']
+         console.log(refreshToken)
        const isValidToken = this.validateRefreshToken(refreshToken)
        if(!isValidToken){
             throw new UnauthorizedException()
@@ -35,6 +33,9 @@ export class AuthService {
             secret: "access"
         })
         return { accessToken, user: candidate};
+      } catch(e){
+        throw new BadRequestException()
+      }
     }
 
     async validate(password: string, email: string) { 
@@ -88,10 +89,10 @@ export class AuthService {
         if(!candidate){
             throw new BadRequestException('user not exist')
         }
-       /* if(!candidate.isVerified){
+        if(!candidate.isVerified){
             await this.emailConfirmationService.sendVerifacationToken(candidate)
-            throw new UnauthorizedException()
-        }*/
+            throw new UnauthorizedException('email not verified')
+        }
         const tokens = await this.generateTokens(candidate)
         return { tokens, user: candidate};
     }

@@ -1,5 +1,5 @@
 import { IsEmail, IsEnum, IsNotEmpty, IsString, Length } from "class-validator"
-import { Roles } from "src/users/enums/user.enum"
+import { Roles } from "../../users/enums/user.enum"
 
 export class RefreshUserDto {
     @IsString({message: "e-mail должен быть строкой"})

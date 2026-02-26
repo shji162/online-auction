@@ -1,37 +1,38 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-import { Status } from "../enums/status.enum";
-
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Status } from '../enums/status.enum';
 
 @Entity()
-export class Auction{
-    @PrimaryGeneratedColumn("uuid")
-    id: string;
+export class Auction {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-    @Column({nullable: false})
-    userId: string
+  @Column({ nullable: false })
+  userId: string;
 
-    @Column()
-    name: string
+  @Column()
+  name: string;
 
-    @Column()
-    description: string
+  @Column()
+  description: string;
 
-    @Column()
-    minPrice: number
+  @Column()
+  minPrice: number;
 
-    @Column()
-    priceStep: number
+  @Column()
+  priceStep: number;
 
-    @Column()
-    currentPrice: number
+  @Column()
+  currentPrice: number;
 
-    @Column()
-    expiresIn: Date
+  @Column()
+  expiresIn: Date;
 
-    @Column({nullable: true})
-    category: string
+  @Column({ nullable: true })
+  category: string;
 
-    @Column({enum: Status, default: Status.ACTIVE})
-    status: Status
+  @Column({ default: 0 })
+  depositAmount: number;
 
+  @Column({ enum: Status, default: Status.ACTIVE })
+  status: Status;
 }

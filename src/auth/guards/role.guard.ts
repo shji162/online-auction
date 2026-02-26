@@ -3,7 +3,7 @@ import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 import { Observable } from 'rxjs';
 import { AuthService } from '../auth.service';
-import { Roles } from 'src/users/enums/user.enum';
+import { Roles } from '../../users/enums/user.enum';
 
 @Injectable()
 export class RoleGuard extends AuthGuard('jwt') {

@@ -7,12 +7,12 @@ interface passwordRecoveryProps{
 }
 
 export function passwordRecovery({domain, token}: passwordRecoveryProps) {
-    const resetLink = `${domain}/auth/password-recovery?token=${token}`
+    const resetLink = `${domain}/new-password?token=${token}`
 
   return (
-    <Tailwind >
+    
       <Html lang="en">
-        <Body className='text-black'>
+        <Body>
           <Heading>Сброс пароля</Heading>
             <Text>
               Привет! Вы запросили сброс пароля. Пожалуйста, перейдите по ссылке ниже, чтобы создать новый пароль:
@@ -26,7 +26,7 @@ export function passwordRecovery({domain, token}: passwordRecoveryProps) {
             <Text>Спасибо за использование нашего сервиса!</Text>
       </Body>
     </Html>
-    </Tailwind>
+ 
 
   );
 };

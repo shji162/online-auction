@@ -7,12 +7,12 @@ interface confirmationEmailProps{
 }
 
 export function confirmationEmail({domain, token}: confirmationEmailProps) {
-    const confirmLink = `${domain}/auth/email-confirmation?token=${token}`
+    const confirmLink = `${domain}/email-confirmation?token=${token}`
 
   return (
-    <Tailwind >
+
       <Html lang="en">
-        <Body className='text-black'>
+        <Body >
           <Heading>подтверждение почты</Heading>
             <Text>
               Привет! Чтобы подтвердить свой адрес электронной почты перейдите по ссылке ниже:
@@ -26,7 +26,7 @@ export function confirmationEmail({domain, token}: confirmationEmailProps) {
             <Text>Спасибо за использование нашего сервиса!</Text>
       </Body>
     </Html>
-    </Tailwind>
+   
 
   );
 };

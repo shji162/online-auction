@@ -3,8 +3,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { TokensService } from '../tokens/tokens.service';
 import { TokenTypes } from '../tokens/enums/tokenType.enum';
 import { resetPasswordDto } from './dto/reset-password.dto';
-import { UsersService } from 'src/users/users.service';
-import { MailService } from 'src/libs/mail/mail.service';
+import { UsersService } from '../../users/users.service';
+import { MailService } from '../../libs/mail/mail.service';
 import { newPasswordDto } from './dto/new-password.dto';
 import * as bcrypt from "bcryptjs"
 

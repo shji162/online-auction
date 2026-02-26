@@ -4,7 +4,7 @@ import { resetPasswordDto } from './dto/reset-password.dto';
 import { ReturnDocument } from 'typeorm';
 import { newPasswordDto } from './dto/new-password.dto';
 
-@Controller('auth/password-recovery')
+@Controller('password-recovery')
 export class PasswordRecoveryController {
   constructor(private readonly passwordRecoveryService: PasswordRecoveryService) {}
 
@@ -14,7 +14,10 @@ export class PasswordRecoveryController {
   }
 
   @Post('new-password')
-  async newPassword(@Body() dto: newPasswordDto, @Query() token: string){
-    return await this.passwordRecoveryService.newPassword(dto, token)
+  async newPassword(
+    @Body() dto: newPasswordDto,
+    @Query('token') token: string,
+  ) {
+    return await this.passwordRecoveryService.newPassword(dto, token);
   }
 }

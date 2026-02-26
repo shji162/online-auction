@@ -8,13 +8,13 @@ import { registerAs } from '@nestjs/config';
 export default registerAs(
   'dbconfig.dev',
   (): PostgresConnectionOptions => ({
-    // Don't put this here, Instead put in the env file
     type: 'postgres',
-    host: 'localhost',
-    port: 5432,
-    username: 'postgres',
-    password: '1234',
-    database: 'postgres',
+    host: process.env.POSTGRES_HOST,
+    url: process.env.POSTGRES_URL,
+    username: process.env.POSTGRES_USER,
+    password: process.env.POSTGRES_PASSWORD,
+    database: process.env.POSTGRES_DATABASE,
+    ssl: {rejectUnauthorized: false},
     entities: [path.resolve(__dirname, '..')  + `/../**/*.entity.js`],
   
     synchronize: true,

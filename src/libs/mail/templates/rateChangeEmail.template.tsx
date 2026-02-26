@@ -9,16 +9,16 @@ interface rateEmailProps{
 export function RateEmail({auctionName, userName}: rateEmailProps) {
 
   return (
-    <Tailwind >
+   
       <Html lang="en">
-        <Body className='text-black'>
+        <Body>
           <Heading>ставка перебита</Heading>
             <Text>
               аукцион {auctionName} - ставка перебита пользователем {userName}
             </Text> 
       </Body>
     </Html>
-    </Tailwind>
+ 
 
   );
 };

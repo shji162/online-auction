@@ -4,10 +4,9 @@ import { v4 as uuidv4 } from 'uuid';
 import { TokensService } from '../tokens/tokens.service';
 import { Request } from 'express';
 import { confirmationDto } from './dto/confirmation.dto';
-import { User } from 'src/users/entities/user.entity';
-import { UsersService } from 'src/users/users.service';
-import { MailService } from 'src/libs/mail/mail.service';
-import { use } from 'passport';
+import { User } from '../../users/entities/user.entity';
+import { UsersService } from '../../users/users.service';
+import { MailService } from '../../libs/mail/mail.service';
 import { TokenTypes } from '../tokens/enums/tokenType.enum';
 
 @Injectable()
